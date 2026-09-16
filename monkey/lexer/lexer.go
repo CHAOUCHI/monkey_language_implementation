@@ -34,21 +34,34 @@ func (l *Lexer) NextToken() token.Token {
 	switch l.ch {
 	case '=':
 		tok = token.New(token.ASSIGN, l.ch)
+		break
 	case '+':
 		tok = token.New(token.PLUS, l.ch)
+		break
 	case '(':
 		tok = token.New(token.LPAREN, l.ch)
+		break
 	case ')':
 		tok = token.New(token.RPAREN, l.ch)
+		break
 	case '{':
 		tok = token.New(token.LBRACE, l.ch)
+		break
 	case '}':
 		tok = token.New(token.RBRACE, l.ch)
+		break
 	case ';':
 		tok = token.New(token.SEMICOLON, l.ch)
+		break
+	case ',':
+		tok = token.New(token.COMMA, l.ch)
+		break
 	case 0: // EOF equal 0 because the end of a string is 0
 		tok.Literal = ""
 		tok.Type = token.EOF
+		break
+	default:
+		tok = token.New(token.ILLEGAL, l.ch)
 	}
 
 	l.readChar() // update l.ch
