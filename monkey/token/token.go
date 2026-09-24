@@ -11,11 +11,12 @@ func New(tokenType TokenType, tokenLiteral byte) Token {
 	return Token{tokenType, string(tokenLiteral)}
 }
 
+// List of the TokenTypes of the MonkeyLangage
 const (
 	ILLEGAL = "ILLEGAL"
 	EOF     = "EOF"
 
-	// Identifiers + literals
+	// Identifiers + variable type
 	IDENT = "IDENT" // the variable names
 	INT   = "INT"
 
@@ -36,3 +37,16 @@ const (
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
 )
+
+// List of the keywords of the MonkeyLangage
+var keywords = map[string]TokenType{
+	"fn":  FUNCTION,
+	"let": LET,
+}
+
+func LookupIdent(ident string) TokenType {
+	if tokenType, isKeyword := keywords[ident]; isKeyword {
+		return tokenType
+	}
+	return IDENT
+}
