@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"fmt"
 	"monkey/token"
 )
 
@@ -37,6 +38,8 @@ func New(input string) *Lexer {
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
+	l.skipWhitespace()
+
 	switch l.ch {
 	case '=':
 		tok = token.New(token.ASSIGN, l.ch)
@@ -69,6 +72,7 @@ func (l *Lexer) NextToken() token.Token {
 	default:
 		// if l.ch isLetter
 		// fmt.Printf("ch : %v   isLetter : %v", string(l.ch), l.isLetter(l.ch))
+		fmt.Printf("%q\n", l.ch)
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIdent(tok.Literal)
@@ -124,4 +128,15 @@ It is used for keyword and identifier so changing the accepted character define 
 */
 func isLetter(ch byte) bool {
 	return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') || (ch == '_')
+}
+
+/*
+Skip whitespace by advancing l.ch and l.readPosition until a non whitespace is encounted
+
+whitespaces character are : SP(' '), LF('\n'), CR('\r'), HT('\t')
+*/
+func (l *Lexer) skipWhitespace() {
+	for l.ch == ' ' || l.ch == '\n' || l.ch == '\r' || l.ch == '\t' {
+		l.readChar()
+	}
 }
