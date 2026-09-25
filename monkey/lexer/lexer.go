@@ -1,7 +1,6 @@
 package lexer
 
 import (
-	"fmt"
 	"monkey/token"
 )
 
@@ -70,12 +69,13 @@ func (l *Lexer) NextToken() token.Token {
 		tok.Type = token.EOF
 		break
 	default:
-		// if l.ch isLetter
-		// fmt.Printf("ch : %v   isLetter : %v", string(l.ch), l.isLetter(l.ch))
-		fmt.Printf("%q\n", l.ch)
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIdent(tok.Literal)
+			return tok // MANDATORY early return before readChar occurs because readIdentifier already calls readChar
+		} else if isDigit(l.ch) {
+			tok.Type = token.INT
+			tok.Literal = l.readNumber()
 			return tok
 		} else {
 			tok = token.New(token.ILLEGAL, l.ch)
@@ -98,6 +98,15 @@ func (l *Lexer) readIdentifier() string {
 		l.readChar()
 	}
 	return l.input[initialPosition:l.position]
+}
+
+func (l *Lexer) readNumber() string {
+	initalPosition := l.position
+	for isDigit(l.ch) {
+		l.readChar()
+	}
+
+	return l.input[initalPosition:l.position]
 }
 
 /**
@@ -124,10 +133,15 @@ func (l *Lexer) readChar() {
 
 /*
 Check if ch is a valid letter
+
 It is used for keyword and identifier so changing the accepted character define what characters are legal for keyword and variable names on the Monkey Langage.
 */
 func isLetter(ch byte) bool {
 	return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') || (ch == '_')
+}
+
+func isDigit(ch byte) bool {
+	return '0' <= ch && ch <= '9'
 }
 
 /*

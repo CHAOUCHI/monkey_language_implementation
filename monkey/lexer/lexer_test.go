@@ -34,7 +34,7 @@ func TestNextToken(t *testing.T) {
 		{token.IDENT, "add"},
 		{token.ASSIGN, "="},
 		{token.FUNCTION, "fn"},
-		{token.LBRACE, "("},
+		{token.LPAREN, "("},
 		{token.IDENT, "x"},
 		{token.COMMA, ","},
 		{token.IDENT, "y"},
@@ -65,8 +65,10 @@ func TestNextToken(t *testing.T) {
 	for i, it := range tests {
 
 		var tok token.Token = l.NextToken()
+		t.Logf("expectedToken : %v", it)
+		t.Logf("tok : %v", tok)
 		if it.expectedType != tok.Type {
-			t.Fatalf("tests[%d] - tokenType wrong. expected %q got %q", i, it.expectedType, tok.Type)
+			t.Fatalf("tests[%d] - tokenType wrong. expected type %q got %q by the Lexer", i, it.expectedType, tok.Type)
 		}
 
 		if it.expectedLiteral != tok.Literal {
