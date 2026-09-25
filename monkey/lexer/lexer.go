@@ -64,6 +64,24 @@ func (l *Lexer) NextToken() token.Token {
 	case ',':
 		tok = token.New(token.COMMA, l.ch)
 		break
+	case '!':
+		tok = token.New(token.BANG, l.ch)
+		break
+	case '-':
+		tok = token.New(token.MINUS, l.ch)
+		break
+	case '*':
+		tok = token.New(token.ASTERISK, l.ch)
+		break
+	case '/':
+		tok = token.New(token.SLASH, l.ch)
+		break
+	case '<':
+		tok = token.New(token.LT, l.ch)
+		break
+	case '>':
+		tok = token.New(token.GT, l.ch)
+		break
 	case 0: // EOF equal 0 because the end of a string is 0
 		tok.Literal = ""
 		tok.Type = token.EOF
