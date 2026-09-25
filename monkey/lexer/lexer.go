@@ -41,7 +41,15 @@ func (l *Lexer) NextToken() token.Token {
 
 	switch l.ch {
 	case '=':
-		tok = token.New(token.ASSIGN, l.ch)
+		if l.peekChar() == '=' {
+			firstChar := l.ch
+			l.readChar()
+
+			tok.Literal = string(firstChar) + string(l.ch)
+			tok.Type = token.EQ
+		} else {
+			tok = token.New(token.ASSIGN, l.ch)
+		}
 		break
 	case '+':
 		tok = token.New(token.PLUS, l.ch)
@@ -65,7 +73,15 @@ func (l *Lexer) NextToken() token.Token {
 		tok = token.New(token.COMMA, l.ch)
 		break
 	case '!':
-		tok = token.New(token.BANG, l.ch)
+		if l.peekChar() == '=' {
+			firstChar := l.ch
+			l.readChar()
+
+			tok.Literal = string(firstChar) + string(l.ch)
+			tok.Type = token.NOT_EQ
+		} else {
+			tok = token.New(token.BANG, l.ch)
+		}
 		break
 	case '-':
 		tok = token.New(token.MINUS, l.ch)
@@ -147,6 +163,17 @@ func (l *Lexer) readChar() {
 	// otherwise the lexer could be on an infinite loop because it would be stuck at reading the last character (l.ch = l.input[l.readPosition])
 	// Remember that this fonction is called by l.NextToken function wich is itself called on a while loop until EOF (0)
 	// that is also why we set l.ch to 0 (EOF)
+}
+
+/*
+Peek the next char and return is without advancing the cursor
+*/
+func (l *Lexer) peekChar() byte {
+	if l.readPosition >= len(l.input) {
+		return 0
+	} else {
+		return l.input[l.readPosition]
+	}
 }
 
 /*
